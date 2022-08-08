@@ -1,0 +1,26 @@
+library(clusterProfiler)
+library(org.Hs.eg.db) #homo
+library(org.Mm.eg.db) #mouse
+library(org.Dr.eg.db) #斑马鱼
+library(DOSE)
+
+eg<-bitr(dat$gene.id,fromType="ENSEMBL",toType="ENTREZID",OrgDb="org.Mm.eg.db")
+
+kegg<-enrichKEGG(eg$ENTREZID, organism = "mmu", keyType = "kegg", pvalueCutoff = 1,
+pAdjustMethod = "fdr", qvalueCutoff = 1, minGSSize = 10, maxGSSize = 500, use_internal_data = FALSE)
+write.csv(as.data.frame(kegg@result),"Mouse_KEGG.csv",row.names=F)
+
+ego_bp<- enrichGO(eg$ENTREZID, OrgDb = org.Mm.eg.db,ont="BP",
+minGSSize = 10, maxGSSize = 500, pAdjustMethod = "fdr", pvalueCutoff  = 1, qvalueCutoff  = 1, readable = TRUE)
+ego_bp_sum<-summary(ego_bp)
+write.csv(ego_bp_sum,"Mouse_GO_BP.csv",row.names=F)
+
+ego_cc<- enrichGO(eg$ENTREZID, OrgDb = org.Mm.eg.db,ont="CC",
+minGSSize = 10, maxGSSize = 500, pAdjustMethod = "fdr", pvalueCutoff  = 1, qvalueCutoff  = 1, readable = TRUE)
+ego_bp_sum<-summary(ego_cc)
+write.csv(ego_bp_sum,"Mouse_GO_CC.csv",row.names=F)
+
+ego_mf<- enrichGO(eg$ENTREZID, OrgDb = org.Mm.eg.db,ont="MF",
+minGSSize = 10, maxGSSize = 500, pAdjustMethod = "fdr", pvalueCutoff  = 1, qvalueCutoff  = 1, readable = TRUE)
+ego_bp_sum<-summary(ego_mf)
+write.csv(ego_bp_sum,"Mouse_GO_MF.csv",row.names=F)
